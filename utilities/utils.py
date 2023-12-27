@@ -15,9 +15,7 @@ def datenum_to_datetime(datenum):
            + dt.timedelta(days=days) \
            - dt.timedelta(days=366)
         
-def get_medatada_information(metadata_file, image_path):
-    data = scipy.io.loadmat(metadata_file)
-
+def get_medatada_information(data, image_path):
     path_list = image_path.split('/')[-2:]
     path = '/'.join(path_list)
     path_array = np.array(path)

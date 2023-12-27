@@ -1,7 +1,8 @@
 from torch.utils.data import Dataset
 import os
-import scipy
+import cv2
 import sys
+import scipy
 sys.path.append('/teamspace/studios/this_studio')
 sys.path.append('/teamspace/studios/this_studio/utilities')
 from utilities.utils import get_medatada_information
@@ -12,6 +13,7 @@ class IMDBDataset(Dataset):
         self.metadata_file = metadata_file
         self.transforms = transforms
         self.images = self.open_directory()
+        self.data = scipy.io.loadmat(metadata_file)
 
     def __len__(self):
         return len(self.images)
@@ -25,11 +27,11 @@ class IMDBDataset(Dataset):
         return sorted(images)
 
     def __getitem__(self, idx):
-        image = self.images[idx]
-        age = get_medatada_information(self.metadata_file, image)
+        image_path = self.images[idx]
+        image = cv2.imread(image_path)
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        age = get_medatada_information(self.data, image_path)
         if self.transforms:
             image = self.transforms(image)
 
         return image, age
-
-dataset = IMDBDataset('/teamspace/studios/this_studio/imdb_crop', '/teamspace/studios/this_studio/imdb/imdb.mat', None)
